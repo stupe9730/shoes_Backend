@@ -10,11 +10,15 @@ mongoose.connect(process.env.BASE_URL);
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   // "http://localhost:5173",
   cors({
-    origin: "https://shoes-backend-yn1r.onrender.com",
+    origin: [
+      "http://localhost:5173",
+      "https://shoes-backend-yn1r.onrender.com",
+    ],
     credentials: true,
   })
 );

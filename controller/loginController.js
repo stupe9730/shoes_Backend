@@ -68,10 +68,10 @@ exports.loginUser = asyncHandler(async (req, res) => {
   );
 
   res.cookie("token", token, {
-    maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
     secure: true,
     sameSite: "None",
+    maxAge: 1000 * 60 * 60 * 24,
   });
 
   res.status(200).json({
