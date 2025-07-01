@@ -12,57 +12,37 @@ exports.registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, loger } = req.body;
 
   // Step 1: Validate email format
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  if (!email || !isValidEmail(email)) {
-    return res.status(400).json({ message: "Invalid email format" });
-  }
 
   // Step 2: Check if email exists (SMTP probe)
-  await new Promise((resolve) => {
-    emailExistence.check(email, async (error, exists) => {
-      if (error) {
-        console.error("Email check error:", error);
-        return res.status(500).json({ message: "Email check failed" });
-      }
 
-      if (!exists) {
-        return res
-          .status(400)
-          .json({ message: "Email address does not exist" });
-      }
+  // Step 3: Check if email is already registered in DB
+  const result = await Login.findOne({ email });
+  if (result) {
+    return res.status(400).json({ message: "Email already registered" });
+  }
 
-      // Step 3: Check if email is already registered in DB
-      const result = await Login.findOne({ email });
-      if (result) {
-        return res.status(400).json({ message: "Email already registered" });
-      }
+  // Step 4: Validate "loger"
+  if (!loger) {
+    return res.status(400).json({ message: "Select loger" });
+  }
 
-      // Step 4: Validate "loger"
-      if (!loger) {
-        return res.status(400).json({ message: "Select loger" });
-      }
-
-      // Step 5: Validate password
-      const isValidPassword =
-        /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-          password
-        );
-      if (!isValidPassword) {
-        return res.status(400).json({
-          message:
-            "Weak password: Must include 1 capital letter, 1 number, 1 special character, and be at least 8 characters long.",
-        });
-      }
-
-      // Step 6: Register user
-      const hash = await bcript.hash(password, 10);
-      await Login.create({ ...req.body, password: hash });
-
-      return res.status(200).json({ message: "Register success" });
-
-      resolve(); // resolves the promise wrapper
+  // Step 5: Validate password
+  const isValidPassword =
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+  if (!isValidPassword) {
+    return res.status(400).json({
+      message:
+        "Weak password: Must include 1 capital letter, 1 number, 1 special character, and be at least 8 characters long.",
     });
-  });
+  }
+
+  // Step 6: Register user
+  const hash = await bcript.hash(password, 10);
+  await Login.create({ ...req.body, password: hash });
+
+  return res.status(200).json({ message: "Register success" });
+
+  resolve(); // resolves the promise wrapper
 });
 exports.loginUser = asyncHandler(async (req, res) => {
   const { password, email, loger } = req.body;
