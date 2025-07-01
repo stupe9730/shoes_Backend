@@ -15,10 +15,8 @@ app.use(cookieParser());
 app.use(
   // "http://localhost:5173",
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://shoes-frontend-iwwf.onrender.com",
-    ],
+    origin: "https://shoes-frontend-iwwf.onrender.com",
+
     credentials: true,
   })
 );
