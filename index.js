@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://shoes-backend-yn1r.onrender.com",
+      "https://shoes-frontend-iwwf.onrender.com",
     ],
     credentials: true,
   })
