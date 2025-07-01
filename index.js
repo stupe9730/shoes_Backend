@@ -13,7 +13,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://shoes-backend-yn1r.onrender.com",
+    ],
     credentials: true,
   })
 );

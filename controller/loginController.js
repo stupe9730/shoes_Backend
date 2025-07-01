@@ -67,7 +67,12 @@ exports.loginUser = asyncHandler(async (req, res) => {
     { expiresIn: "24h" }
   );
 
-  res.cookie("token", token, { maxAge: 1000 * 60 * 60 * 24, httpOnly: true });
+  res.cookie("token", token, {
+    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  });
 
   res.status(200).json({
     message: "Login Success",
