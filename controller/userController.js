@@ -120,21 +120,38 @@ exports.addOrder = asyncHandler(async (req, res) => {
 exports.getOrder = asyncHandler(async (req, res) => {
   const { logerId } = req.query;
   console.log(logerId);
+
+  // Get all orders for the user
   const result = await Order.find({ logerId });
 
+  // Extract product IDs from orders
   const proIds = result.map((item) => item.ProId);
 
+  // Get product details from Admin collection
   const filteredData = await Admin.find({ _id: { $in: proIds } });
+
+  // Merge data
   const combinedData = result.map((cartItem) => {
     const adminItem = filteredData.find((adminDoc) =>
       adminDoc._id.equals(cartItem.ProId)
     );
 
     return {
-      ...cartItem.toObject(), // Convert Cart item to plain object
-      ...(adminItem ? adminItem.toObject() : {}), // Convert Admin item to plain object and merge
+      ...cartItem.toObject(), // Order fields
+      remo: adminItem ? adminItem.toObject() : {}, // Admin fields inside `remo`
     };
   });
 
   res.status(200).json({ message: "Get Cart Success", combinedData });
+});
+
+exports.removeOrder = asyncHandler(async (req, res) => {
+  // const { logerId } = req.query;
+  const { id } = req.params;
+  console.log(id);
+
+  const result = await Order.findByIdAndDelete(id);
+  console.log(result);
+
+  res.status(200).json({ message: "Order Cancel Succes" });
 });
