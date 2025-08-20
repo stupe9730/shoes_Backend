@@ -1,19 +1,29 @@
-const { getUserProduct, getUserCartProduct, addToCart, getToCart, removeToCart, addOrder, getOrder } = require('../controller/userController')
-const { userProtected } = require('../middleware/protected')
+const {
+  getUserProduct,
+  getUserCartProduct,
+  addToCart,
+  getToCart,
+  removeToCart,
+  addOrder,
+  getOrder,
+  removeOrder,
+} = require("../controller/userController");
+const { userProtected } = require("../middleware/protected");
 
-const router = require('express').Router()
+const router = require("express").Router();
 
 router
-    .get('/getUserProduct', getUserProduct)
-    .get('/getUserCartProduct', getUserCartProduct)
+  .get("/getUserProduct", getUserProduct)
+  .get("/getUserCartProduct", getUserCartProduct)
 
-    // Cart
-    .post('/addToCart', userProtected, addToCart)
-    .get('/getToCart', userProtected, getToCart)
-    .delete('/removeToCart', removeToCart)
+  // Cart
+  .post("/addToCart", userProtected, addToCart)
+  .get("/getToCart", userProtected, getToCart)
+  .delete("/removeToCart", removeToCart)
 
-    // order
-    .post('/addOrder', userProtected, addOrder)
-    .get('/getOrder', userProtected, getOrder)
+  // order
+  .post("/addOrder", userProtected, addOrder)
+  .get("/getOrder", userProtected, getOrder)
+  .delete("/removeOrder/:id", userProtected, removeOrder);
 
-module.exports = router
+module.exports = router;
